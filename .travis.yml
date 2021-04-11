@@ -23,7 +23,7 @@ jobs:
         - docker login --username=_ --password=$HEROKU_API_KEY registry.heroku.com
 
       script:
-        - docker build -t registry.heroku.com/deleters-tracker/web demo
+        - docker build -t registry.heroku.com/deleters-tracker/web .
 
       deploy:
         provider: script
