@@ -1,7 +1,7 @@
 FROM python:3.9-slim-buster
 WORKDIR /app
 
-RUN pip install flask gunicorn
+RUN pip install flask gunicorn requests
 
 COPY app.py app.py
 COPY templates/index.html templates/index.html
