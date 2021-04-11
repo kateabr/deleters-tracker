@@ -1,0 +1,34 @@
+language: shell
+os: linux
+dist: focal
+
+env:
+  global:
+    DOCKER_BUILDKIT: "1"
+    DOCKER_CLI_EXPERIMENTAL: "enabled"
+
+jobs:
+  include:
+    - language: shell
+
+      services:
+        - docker
+      before_install:
+        - echo '{"experimental":true}' | sudo tee /etc/docker/daemon.json
+        - sudo service docker restart
+        - docker info
+
+      before_script:
+        - curl https://cli-assets.heroku.com/install.sh | sh
+        - docker login --username=_ --password=$HEROKU_API_KEY registry.heroku.com
+
+      script:
+        - docker build -t registry.heroku.com/deleters-tracker/web demo
+
+      deploy:
+        provider: script
+        script: docker push registry.heroku.com/deleters-tracker/web &&
+          heroku container:release web --app deleters-tracker
+        on:
+          condition: ($TRAVIS_BRANCH == "master" || -n $TRAVIS_TAG)
+          all_branches: true
