@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css">
+    <title>Frequent deleters</title>
+</head>
+<body>
+<div class="sticky-top" style="margin-top: 20px">
+    <div class="dropdown show text-center">
+        <a class="btn btn-secondary dropdown-toggle" role="button" id="dropdownMenuLink" data-toggle="dropdown"
+           aria-haspopup="true" aria-expanded="false">
+            Change preferred name language
+        </a>
+
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+            <a class="dropdown-item"
+               onclick="localStorage.setItem('nameLanguage', 'Default'); render_deleter({{ artistId|safe }})">Default</a>
+            <a class="dropdown-item"
+               onclick="localStorage.setItem('nameLanguage', 'Japanese'); render_deleter({{ artistId|safe }})">Japanese</a>
+            <a class="dropdown-item"
+               onclick="localStorage.setItem('nameLanguage', 'Romaji'); render_deleter({{ artistId|safe }})">Romaji</a>
+            <a class="dropdown-item"
+               onclick="localStorage.setItem('nameLanguage', 'English'); render_deleter({{ artistId|safe }})">English</a>
+        </div>
+    </div>
+</div>
+<div style="margin-bottom: 20px; margin-left:  2%; margin-right: 2%; z-index: 0">
+    <div id="accordion">
+        {% for deleter in deleters %}
+        {% if (artistId == deleter.id) %}
+        <div class="card" style="margin-top: 10px; margin-bottom: 10px">
+            <div class="card-header" id="_{{ deleter.id }}">
+                <h5 class="mb-0">
+                    <table style="width: 100%">
+                        <tr>
+                            <td>
+                                <button class="btn btn-link" data-toggle="collapse"
+                                        data-target="#__{{ deleter.id }}"
+                                        aria-expanded="true" aria-controls="__{{ deleter.id }}"
+                                        onclick="render_deleter({{ deleter.id|safe }})" style="pointer-events: none">
+                                    <i class="fas fa-angle-down"></i> {{ deleter.name }}
+                                    <button type="button" class="btn btn-primary btn-sm" onclick="location.reload();"><i
+                                            class="fas fa-redo"></i></button>
+                                </button>
+                            </td>
+                            <td style="width: 10%"><a type="button" class="btn btn-primary btn-sm"
+                                                      href="https://vocadb.net/Ar/{{ deleter.id }}" target="_blank">
+                                <i class="fas fa-angle-double-right" style="margin-right: 3px"></i>VocaDB</a>
+                            </td>
+                        </tr>
+                    </table>
+                </h5>
+            </div>
+            <div id="__{{ deleter.id }}" class="show" aria-labelledby="_{{ deleter.id }}" data-parent="#accordion">
+                <div class="card-body">
+                    <table class="table table-hover" data-search="true">
+                        <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Name</th>
+                            <th style="width: 40%">Featured artists</th>
+                            <th>Original media available</th>
+                            <th>Reprinted</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for song in songs %}
+                        <tr>
+                            <td><a href="https://vocadb.net/S/{{ song.id }}" target="_blank">{{ song.id }}</a></td>
+                            <td>{{ song.name }}</td>
+                            <td>{{ song.artistString }}</td>
+                            <td>
+                                {% if (song.deleted) %}
+                                ❌
+                                {% else %}
+                                ✔️
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if (song.reprinted) %}
+                                ✔️
+                                {% else %}
+                                ❌
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="card">
+            <div class="card-header" id="_{{ deleter.id }}">
+                <h5 class="mb-0">
+                    <table style="width: 100%">
+                        <tr>
+                            <td>
+                                <button class="btn btn-link"
+                                        onclick="render_deleter({{ deleter.id|safe }})">
+                                    <i class="fas fa-angle-right"></i> {{ deleter.name }}
+                                </button>
+                            </td>
+                            <td style="width: 10%"><a type="button" class="btn btn-primary btn-sm"
+                                                      href="https://vocadb.net/Ar/{{ deleter.id }}" target="_blank">
+                                <i class="fas fa-angle-double-right" style="margin-right: 3px"></i>VocaDB</a>
+                            </td>
+                        </tr>
+                    </table>
+                </h5>
+            </div>
+        </div>
+        {% endif %}
+        {% endfor %}
+    </div>
+</div>
+
+</body>
+<script>
+    if (localStorage.getItem('nameLanguage') == undefined) {
+        localStorage.setItem('nameLanguage', 'Default')
+    }
+
+    function render_deleter(artistId) {
+        window.location.replace('/?artistId=' + artistId +
+            '&lang=' + localStorage.getItem('nameLanguage') + '#_' + artistId);
+    }
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</html>
