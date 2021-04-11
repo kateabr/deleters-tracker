@@ -8,8 +8,9 @@
     <title>Frequent deleters</title>
 </head>
 <body>
-<div class="sticky-top" style="margin-top: 20px">
-    <div class="dropdown show text-center">
+<div class="sticky-top container-fluid" style="margin-top: 20px; margin-bottom: 20px">
+    <table class="text-center" style="width: 22%; margin-right: 39%; margin-left: 39%"><tr><td>
+    <div class="dropdown show">
         <a class="btn btn-secondary dropdown-toggle" role="button" id="dropdownMenuLink" data-toggle="dropdown"
            aria-haspopup="true" aria-expanded="false">
             Change preferred name language
@@ -26,6 +27,9 @@
                onclick="localStorage.setItem('nameLanguage', 'English'); render_deleter({{ artistId|safe }})">English</a>
         </div>
     </div>
+        </td><td>
+    <button type="button" class="btn btn-primary" onclick="location.reload();"><i
+            class="fas fa-redo"></i></button></td></tr></table>
 </div>
 <div style="margin-bottom: 20px; margin-left:  2%; margin-right: 2%; z-index: 0">
     <div id="accordion">
@@ -42,8 +46,6 @@
                                         aria-expanded="true" aria-controls="__{{ deleter.id }}"
                                         onclick="render_deleter({{ deleter.id|safe }})" style="pointer-events: none">
                                     <i class="fas fa-angle-down"></i> {{ deleter.name }}
-                                    <button type="button" class="btn btn-primary btn-sm" onclick="location.reload();"><i
-                                            class="fas fa-redo"></i></button>
                                 </button>
                             </td>
                             <td style="width: 10%"><a type="button" class="btn btn-primary btn-sm"
