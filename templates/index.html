@@ -9,26 +9,26 @@
 </head>
 <body>
 <div class="sticky-top container-fluid" style="margin-top: 20px; margin-bottom: 20px">
-    <table class="text-center" style="width: 22%; margin-right: 39%; margin-left: 39%"><tr><td>
+    <table class="text-center" style="margin: auto"><tr><td>
     <div class="dropdown show">
-        <a class="btn btn-secondary dropdown-toggle" role="button" id="dropdownMenuLink" data-toggle="dropdown"
+        <button type="button" class="btn btn-primary dropdown-toggle" role="button" id="dropdownMenuLink" data-toggle="dropdown"
            aria-haspopup="true" aria-expanded="false">
-            Change preferred name language
-        </a>
+            Preferred name language
+        </button>
 
-        <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-            <a class="dropdown-item"
-               onclick="localStorage.setItem('nameLanguage', 'Default'); render_deleter({{ artistId|safe }})">Default</a>
-            <a class="dropdown-item"
-               onclick="localStorage.setItem('nameLanguage', 'Japanese'); render_deleter({{ artistId|safe }})">Japanese</a>
-            <a class="dropdown-item"
-               onclick="localStorage.setItem('nameLanguage', 'Romaji'); render_deleter({{ artistId|safe }})">Romaji</a>
-            <a class="dropdown-item"
-               onclick="localStorage.setItem('nameLanguage', 'English'); render_deleter({{ artistId|safe }})">English</a>
-        </div>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+            <li class="dropdown-item" id="Default"
+               onclick="set_cookie('Default'); location.reload()">Default</li>
+            <li class="dropdown-item" id="Japanese"
+               onclick="set_cookie('Japanese'); location.reload()">Non-English</li>
+            <li class="dropdown-item" id="Romaji"
+               onclick="set_cookie('Romaji'); location.reload()">Transliterated</li>
+            <li class="dropdown-item" id="English"
+               onclick="set_cookie('English'); location.reload()">English</li>
+        </ul>
     </div>
         </td><td>
-    <button type="button" class="btn btn-primary" onclick="location.reload();"><i
+    <button type="button" class="btn btn-primary" role="button" onclick="location.reload();"><i
             class="fas fa-redo"></i></button></td></tr></table>
 </div>
 <div style="margin-bottom: 20px; margin-left:  2%; margin-right: 2%; z-index: 0">
@@ -123,13 +123,16 @@
 
 </body>
 <script>
-    if (localStorage.getItem('nameLanguage') == undefined) {
-        localStorage.setItem('nameLanguage', 'Default')
+    function set_cookie(lang) {
+        document.cookie = "nameLanguage=" + lang + ";samesite=lax;expires=Fri, 31 Dec 9999 23:59:59 GMT";
     }
 
+    window.addEventListener('load', (event) => {
+        document.getElementById("{{ lang|safe }}").className = 'dropdown-item active';
+    });
+
     function render_deleter(artistId) {
-        window.location.replace('/?artistId=' + artistId +
-            '&lang=' + localStorage.getItem('nameLanguage') + '#_' + artistId);
+        window.location.replace('/?artistId=' + artistId + '#_' + artistId);
     }
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>

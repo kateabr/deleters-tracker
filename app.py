@@ -46,7 +46,7 @@ def load_deleters(lang):
 @app.route('/')
 def render_deleters():
     artistId = request.args.get('artistId')
-    lang = request.args.get('lang')
+    lang = request.cookies.get('nameLanguage')
     if lang is None:
         lang = 'Default'
     deleters_clean = load_deleters(lang)
@@ -67,7 +67,6 @@ def render_deleters():
             f"https://vocadb.net/api/songs?artistId%5B%5D={artistId}&start={50 * off_mult}&maxResults={count}&fields=PVs&artistParticipationStatus=OnlyMainAlbums&lang={lang}&sort=PublishDate").text)
         for song in deleter_songs['items']:
             if song['pvs'] and not any(deleter_song.id == song['id'] for deleter_song in songs):
-                print(song)
                 songs.append(DeleterSong(song['name'],
                                                      song['id'],
                                                      song['artistString'],
