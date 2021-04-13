@@ -51,7 +51,10 @@ def render_deleters():
         lang = 'Default'
     deleters_clean = load_deleters(lang)
     if artistId is None:
-        artistId = deleters_clean[0].id
+        artistId = request.cookies.get('artistId')
+        if artistId is None:
+            artistId = -1
+            return render_template('index.html', deleters=deleters_clean, artistId=artistId, songs=[], lang=lang)
     else:
         artistId = int(artistId)
 

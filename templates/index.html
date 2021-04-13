@@ -12,19 +12,19 @@
     <table class="text-center" style="margin: auto"><tr><td>
     <div class="dropdown show">
         <button type="button" class="btn btn-primary dropdown-toggle" role="button" id="dropdownMenuLink" data-toggle="dropdown"
-           aria-haspopup="true" aria-expanded="false">
+           aria-haspopup="true" aria-expanded="false" aria-pressed="false">
             Preferred name language
         </button>
 
         <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
             <li class="dropdown-item" id="Default"
-               onclick="set_cookie('Default'); location.reload()">Default</li>
+               onclick="Cookies.set('nameLanguage', 'Default'); location.reload()">Default</li>
             <li class="dropdown-item" id="Japanese"
-               onclick="set_cookie('Japanese'); location.reload()">Non-English</li>
+               onclick="Cookies.set('nameLanguage', 'Japanese'); location.reload()">Non-English</li>
             <li class="dropdown-item" id="Romaji"
-               onclick="set_cookie('Romaji'); location.reload()">Transliterated</li>
+               onclick="Cookies.set('nameLanguage', 'Romaji'); location.reload()">Transliterated</li>
             <li class="dropdown-item" id="English"
-               onclick="set_cookie('English'); location.reload()">English</li>
+               onclick="Cookies.set('nameLanguage', 'English'); location.reload()">English</li>
         </ul>
     </div>
         </td><td>
@@ -44,7 +44,7 @@
                                 <button class="btn btn-link" data-toggle="collapse"
                                         data-target="#__{{ deleter.id }}"
                                         aria-expanded="true" aria-controls="__{{ deleter.id }}"
-                                        onclick="render_deleter({{ deleter.id|safe }})" style="pointer-events: none">
+                                        style="pointer-events: none">
                                     <i class="fas fa-angle-down"></i> {{ deleter.name }}
                                 </button>
                             </td>
@@ -70,7 +70,7 @@
                         </thead>
                         <tbody>
                         {% for song in songs %}
-                        <tr id="s_{{ song.id }}">
+                        <tr id="s_{{ song.id }}" class="visible">
                             <td><a onclick="highlight('s_{{ song.id }}')" href="https://vocadb.net/S/{{ song.id }}" target="_blank">{{ song.id }}</a></td>
                             <td>{{ song.name }}</td>
                             <td>{{ song.artistString }}</td>
@@ -103,7 +103,7 @@
                         <tr>
                             <td>
                                 <button class="btn btn-link"
-                                        onclick="render_deleter({{ deleter.id|safe }})">
+                                        onclick="refresh({{ deleter.id|safe }})">
                                     <i class="fas fa-angle-right"></i> {{ deleter.name }}
                                 </button>
                             </td>
@@ -123,22 +123,27 @@
 
 </body>
 <script>
-    function set_cookie(lang) {
-        document.cookie = "nameLanguage=" + lang + ";samesite=lax;expires=Fri, 31 Dec 9999 23:59:59 GMT";
-    }
-
     function highlight(song) {
         document.getElementById(song).style.backgroundColor = 'rgba(0,0,0,.04)';
     }
 
     window.addEventListener('load', (event) => {
         document.getElementById("{{ lang|safe }}").className = 'dropdown-item active';
+        if ({{ artistId }} != -1)
+        {
+            if (Cookies.get('artistId') !== '{{ artistId|safe }}') {
+                Cookies.set('artistId', '{{ artistId|safe }}', {expires: 100000, sameSite: 'lax'});
+                document.getElementById('_' + Cookies.get('artistId')).scrollIntoView();
+            }
+        }
+        Cookies.set('nameLanguage', '{{ lang|safe }}', { expires: 100000, sameSite: 'lax'});
     });
 
-    function render_deleter(artistId) {
-        window.location.replace('/?artistId=' + artistId + '#_' + artistId);
+    function refresh(artistId) {
+        window.location.replace('/?artistId=' + artistId);
     }
 </script>
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
