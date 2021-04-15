@@ -42,6 +42,15 @@
                                         aria-expanded="true" aria-controls="__{{ deleter.id }}"
                                         style="pointer-events: none">
                                     <i class="fas fa-angle-down"></i> {{ deleter.name }}
+                                    {% if deleter.type[0] == 'P' %}
+                                    <span class="badge badge-pill badge-primary mb-0" style="margin-left: 3px">
+                                    {% elif deleter.type[0] == 'C' %}
+                                    <span class="badge badge-pill badge-dark mb-0" style="margin-left: 3px">
+                                    {% else %}
+                                    <span class="badge badge-pill badge-secondary mb-0" style="margin-left: 3px">
+                                    {% endif %}
+                                        {{ deleter.type[0] }}
+                                    </span>
                                 </button>
                             </td>
                             <td style="width: 10%"><a type="button" class="btn btn-primary btn-sm"
@@ -60,13 +69,16 @@
                             <th class="col-lg-1">Id</th>
                             <th class="col-lg-4">Name</th>
                             <th class="col-lg-5">Featured artists</th>
-                            <th class="col-lg-1">Available</th>
-                            <th class="col-lg-1">Reprinted</th>
+                            <th class="col-lg-1">
+                                <button type="button" class="btn btn-primary active" id="originals" onclick="toggle('originals')">Available</button></th>
+                            <th class="col-lg-1">
+                                <button type="button" class="btn btn-primary active" id="reprints" onclick="toggle('reprints')">Reprinted</button>
+                            </th>
                         </tr>
                         </thead>
                         <tbody>
                         {% for song in songs %}
-                        <tr id="s_{{ song.id }}" class="visible">
+                        <tr id="s_{{ song.id }}" class="">
                             <td><a onclick="highlight('s_{{ song.id }}')" href="https://vocadb.net/S/{{ song.id }}" target="_blank">{{ song.id }}</a></td>
                             <td>{{ song.name }}</td>
                             <td>{{ song.artistString }}</td>
@@ -101,6 +113,15 @@
                                 <button class="btn btn-link"
                                         onclick="refresh({{ deleter.id|safe }})">
                                     <i class="fas fa-angle-right"></i> {{ deleter.name }}
+                                    {% if deleter.type[0] == 'P' %}
+                                    <span class="badge badge-pill badge-primary mb-0" style="margin-left: 3px">
+                                    {% elif deleter.type[0] == 'C' %}
+                                    <span class="badge badge-pill badge-dark mb-0" style="margin-left: 3px">
+                                    {% else %}
+                                    <span class="badge badge-pill badge-secondary mb-0" style="margin-left: 3px">
+                                    {% endif %}
+                                        {{ deleter.type[0] }}
+                                    </span>
                                 </button>
                             </td>
                             <td style="width: 10%"><a type="button" class="btn btn-primary btn-sm"
@@ -138,6 +159,21 @@
     function refresh(artistId) {
         window.location.replace('/?artistId=' + artistId);
     }
+
+    function toggle(type) {
+        let song_ids = (type === 'originals') ? {{ songs|selectattr('deleted', 'false') | map(attribute='id')|list }} : {{ songs|selectattr('reprinted', 'true') | map(attribute='id')|list }};
+        for (let i = 0; i < song_ids.length; ++i) {
+            if (document.getElementById("s_" + song_ids[i]).className === "d-none") {
+                    document.getElementById("s_" + song_ids[i]).className = "";
+                    document.getElementById(type).className = "btn btn-primary active";
+                }
+                else {
+                    document.getElementById("s_" + song_ids[i]).className = "d-none";
+                    document.getElementById(type).className = 'btn btn-primary';
+                }
+            }
+    }
+
 </script>
 <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
