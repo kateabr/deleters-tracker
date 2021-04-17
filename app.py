@@ -23,6 +23,7 @@ class DeleterSong:
     deleted: bool
     reprinted: bool
 
+
 def load_deleters(lang):
     deleters_clean = []
     deleters = json.loads(
@@ -69,15 +70,17 @@ def render_deleters():
         deleter_songs = json.loads(requests.get(
             f"https://vocadb.net/api/songs?artistId%5B%5D={artistId}&start={50 * off_mult}&maxResults={count}&fields=PVs&artistParticipationStatus=OnlyMainAlbums&lang={lang}&sort=PublishDate").text)
         for song in deleter_songs['items']:
-            if song['pvs'] and not any(deleter_song.id == song['id'] for deleter_song in songs):
+            if song['pvs'] and any(pv['pvType'] != 'Other' for pv in song['pvs']) and not any(
+                    deleter_song.id == song['id'] for deleter_song in songs):
                 songs.append(DeleterSong(song['name'],
-                                                     song['id'],
-                                                     song['artistString'],
-                                                     all(pv['disabled'] for pv in [orig for orig in song['pvs'] if
-                                                                                   orig['pvType'] == 'Original']),
-                                                     not all(pv['pvType'] == 'Original' for pv in song['pvs'])))
+                                         song['id'],
+                                         song['artistString'],
+                                         all(pv['disabled'] for pv in [orig for orig in song['pvs'] if
+                                                                       orig['pvType'] == 'Original']),
+                                         not all(pv['pvType'] == 'Original' for pv in song['pvs'])))
 
     return render_template('index.html', deleters=deleters_clean, artistId=artistId, songs=songs, lang=lang)
+
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
