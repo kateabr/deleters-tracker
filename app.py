@@ -71,7 +71,7 @@ def render_deleters():
             f"https://vocadb.net/api/songs?artistId%5B%5D={artistId}&start={50 * off_mult}&maxResults={count}&fields=PVs&artistParticipationStatus=OnlyMainAlbums&lang={lang}&sort=PublishDate").text)
         for song in deleter_songs['items']:
             if song['pvs'] and any(pv['pvType'] != 'Other' for pv in song['pvs']) and not any(
-                    deleter_song.id == song['id'] for deleter_song in songs):
+                    deleter_song.id == song['id'] for deleter_song in songs) and song['songType'] != 'Instrumental':
                 songs.append(DeleterSong(song['name'],
                                          song['id'],
                                          song['artistString'],
