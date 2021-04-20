@@ -83,7 +83,9 @@
                             <td>{{ song.name }}</td>
                             <td>{{ song.artistString }}</td>
                             <td>
-                                {% if (song.deleted) %}
+                                {% if (song.sound_only) %}
+                                🎵
+                                {% elif (song.deleted) %}
                                 ❌
                                 {% else %}
                                 ✔️
