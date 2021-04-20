@@ -79,7 +79,7 @@ def render_deleters():
                                          all(pv['disabled'] for pv in [orig for orig in song['pvs'] if
                                                                        orig['pvType'] == 'Original']),
                                          not all(pv['pvType'] == 'Original' for pv in song['pvs']),
-                                         all(pv['service'] in ['Soundcloud', 'Piapro', 'Bandcamp'] for pv in song['pvs'])))
+                                         all(pv['service'] in ['SoundCloud', 'Piapro', 'Bandcamp'] for pv in song['pvs'])))
 
     return render_template('index.html', deleters=deleters_clean, artistId=artistId, songs=songs, lang=lang)
 
