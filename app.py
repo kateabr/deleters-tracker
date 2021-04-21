@@ -23,6 +23,8 @@ class DeleterSong:
     deleted: bool
     reprinted: bool
     sound_only: bool
+    original_services: str
+    reprint_services: str
 
 
 def load_deleters(lang):
@@ -79,7 +81,9 @@ def render_deleters():
                                          all(pv['disabled'] for pv in [orig for orig in song['pvs'] if
                                                                        orig['pvType'] == 'Original']),
                                          not all(pv['pvType'] == 'Original' for pv in song['pvs']),
-                                         all(pv['service'] in ['SoundCloud', 'Piapro', 'Bandcamp'] for pv in song['pvs'])))
+                                         all(pv['service'] in ['SoundCloud', 'Piapro', 'Bandcamp'] for pv in song['pvs']),
+                                         ', '.join(set([pv['service'] for pv in song['pvs'] if pv['pvType'] == 'Original'])),
+                                         ', '.join(set([pv['service'] for pv in song['pvs'] if pv['pvType'] != 'Original']))))
 
     return render_template('index.html', deleters=deleters_clean, artistId=artistId, songs=songs, lang=lang)
 

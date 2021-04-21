@@ -6,6 +6,12 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css">
     <title>Frequent deleters</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script type='text/javascript'>
+        $(document).ready(function() {
+            $("body").tooltip({ selector: '[data-toggle=tooltip]' });
+        });
+    </script>
 </head>
 <body>
 <div class="sticky-top container-fluid text-center" style="margin: 20px auto;">
@@ -86,14 +92,20 @@
                                 {% if (song.deleted) %}
                                 ❌
                                 {% elif (song.sound_only) %}
-                                🎵
+                                <div data-toggle="tooltip" data-placement="left" title="{{ song.original_services }}">
+                                    🎵
+                                </div>
                                 {% else %}
-                                ✔️
+                                <div data-toggle="tooltip" data-placement="left" title="{{ song.original_services }}">
+                                    ✔️
+                                </div>
                                 {% endif %}
                             </td>
                             <td>
                                 {% if (song.reprinted) %}
-                                ✔️
+                                <div data-toggle="tooltip" data-placement="left" title="{{ song.reprint_services }}">
+                                    ✔️
+                                </div>
                                 {% else %}
                                 ❌
                                 {% endif %}
@@ -177,6 +189,7 @@
     }
 
 </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
