@@ -74,8 +74,10 @@
                         <thead>
                         <tr>
                             <th class="col-lg-1">Id</th>
-                            <th class="col-lg-4">Name</th>
+                            <th class="col-lg-3">Name</th>
                             <th class="col-lg-5">Featured artists</th>
+                            <th class="col-lg-1">
+                                <a type="button" class="btn btn-primary active" style="display: block" id="on_albums" onclick="toggle('on_albums')">On album</a></th>
                             <th class="col-lg-1">
                                 <a type="button" class="btn btn-primary active" style="display: block" id="originals" onclick="toggle('originals')">Available</a></th>
                             <th class="col-lg-1">
@@ -89,6 +91,13 @@
                             <td><a onclick="highlight('s_{{ song.id }}')" href="https://vocadb.net/S/{{ song.id }}" target="_blank">{{ song.id }}</a></td>
                             <td>{{ song.name }}</td>
                             <td>{{ song.artistString }}</td>
+                            <td>
+                                {% if (song.on_albums) %}
+                                ✔️
+                                {% else %}
+                                ❌
+                                {% endif %}
+                            </td>
                             <td>
                                 {% if (song.deleted) %}
                                 ❌
@@ -176,7 +185,16 @@
     }
 
     function toggle(type) {
-        let song_ids = (type === 'originals') ? {{ songs|selectattr('deleted', 'false') | map(attribute='id')|list }} : {{ songs|selectattr('reprinted', 'true') | map(attribute='id')|list }};
+        let song_ids = [];
+        if (type === 'originals') {
+            song_ids = {{ songs|selectattr('deleted', 'false') | map(attribute='id')|list }}
+        }
+        else if (type === 'reprints') {
+            song_ids = {{ songs|selectattr('reprinted', 'true') | map(attribute='id')|list }}
+        }
+        else if (type === 'on_albums') {
+            song_ids = {{ songs|selectattr('on_albums', 'true') | map(attribute='id')|list }}
+        }
         for (let i = 0; i < song_ids.length; ++i) {
             if (document.getElementById("s_" + song_ids[i]).className === "d-none") {
                     document.getElementById("s_" + song_ids[i]).className = "";

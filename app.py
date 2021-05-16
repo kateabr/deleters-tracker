@@ -25,6 +25,7 @@ class DeleterSong:
     sound_only: bool
     original_services: str
     reprint_services: str
+    on_albums: bool
 
 
 def load_deleters(lang):
@@ -71,7 +72,7 @@ def render_deleters():
         loop.append((len(loop), total_count % 50))
     for off_mult, count in loop:
         deleter_songs = json.loads(requests.get(
-            f"https://vocadb.net/api/songs?artistId%5B%5D={artistId}&start={50 * off_mult}&maxResults={count}&fields=PVs&artistParticipationStatus=OnlyMainAlbums&lang={lang}&sort=PublishDate").text)
+            f"https://vocadb.net/api/songs?artistId%5B%5D={artistId}&start={50 * off_mult}&maxResults={count}&fields=PVs,Albums&artistParticipationStatus=OnlyMainAlbums&lang={lang}&sort=PublishDate").text)
         for song in deleter_songs['items']:
             if song['pvs'] and any(pv['pvType'] != 'Other' for pv in song['pvs']) and not any(
                     deleter_song.id == song['id'] for deleter_song in songs) and song['songType'] != 'Instrumental':
@@ -86,7 +87,8 @@ def render_deleters():
                                          ', '.join(set([pv['service'] for pv in song['pvs']
                                                         if pv['pvType'] == 'Original' and not pv['disabled']])),
                                          ', '.join(set([pv['service'] for pv in song['pvs']
-                                                        if pv['pvType'] != 'Original' and not pv['disabled']]))))
+                                                        if pv['pvType'] != 'Original' and not pv['disabled']])),
+                                         song['albums'] != []))
 
     return render_template('index.html', deleters=deleters_clean, artistId=artistId, songs=songs, lang=lang)
 
