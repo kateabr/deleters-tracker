@@ -15,10 +15,13 @@
 </head>
 <body>
 <div class="sticky-top container-fluid text-center" style="margin: 20px auto;">
-    <div class="dropdown show">
+    <table style="margin:auto">
+        <tr>
+            <td>
+    <div class="dropdown show" style="padding-right: 3px">
         <button type="button" class="btn btn-primary dropdown-toggle" role="button" id="dropdownMenuLink" data-toggle="dropdown"
            aria-haspopup="true" aria-expanded="false" aria-pressed="false">
-            Preferred name language
+            Name language
         </button>
 
         <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
@@ -32,6 +35,37 @@
                onclick="Cookies.set('nameLanguage', 'English'); location.reload()">English</li>
         </ul>
     </div>
+            </td><td>
+    <div class="dropdown show" style="padding-left: 3px">
+        <button type="button" class="btn btn-primary dropdown-toggle" role="button" id="dropdownMenuLink2" data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="false" aria-pressed="false">
+            Date format
+        </button>
+
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink2">
+            <li class="dropdown-item" id="auto"
+                onclick="Cookies.set('dateFormat', 'auto'); location.reload()">(automatic)</li>
+            <li class="dropdown-item" id="de_DE"
+                onclick="Cookies.set('dateFormat', 'de_DE'); location.reload()">German</li>
+            <li class="dropdown-item" id="en_US"
+                onclick="Cookies.set('dateFormat', 'en_US'); location.reload()">English</li>
+            <li class="dropdown-item" id="es_ES"
+                onclick="Cookies.set('dateFormat', 'es_ES'); location.reload()">Spanish</li>
+            <li class="dropdown-item" id="pt_PT"
+                onclick="Cookies.set('dateFormat', 'pt_PT'); location.reload()">Portuguese</li>
+            <li class="dropdown-item" id="fi_FI"
+                onclick="Cookies.set('dateFormat', 'fi_FI'); location.reload()">Finnish</li>
+            <li class="dropdown-item" id="ru_RU"
+                onclick="Cookies.set('dateFormat', 'ru_RU'); location.reload()">Russian</li>
+            <li class="dropdown-item" id="zh_Hans"
+                onclick="Cookies.set('dateFormat', 'zh_Hans'); location.reload()">Chinese (simplified)</li>
+            <li class="dropdown-item" id="ja_JP"
+                onclick="Cookies.set('dateFormat', 'ja_JP'); location.reload()">Japanese</li>
+        </ul>
+    </div>
+        </td>
+        </tr>
+    </table>
 </div>
 <div style="margin-bottom: 20px; margin-left:  2%; margin-right: 2%; z-index: 0">
     <div id="accordion">
@@ -74,8 +108,7 @@
                         <thead>
                         <tr>
                             <th class="col-lg-1">Id</th>
-                            <th class="col-lg-3">Name</th>
-                            <th class="col-lg-5">Featured artists</th>
+                            <th class="col-lg-8">Info</th>
                             <th class="col-lg-1">
                                 <a type="button" class="btn btn-primary active" style="display: block" id="on_albums" onclick="toggle('on_albums')">On album</a></th>
                             <th class="col-lg-1">
@@ -89,16 +122,19 @@
                         {% for song in songs %}
                         <tr id="s_{{ song.id }}" class="">
                             <td><a onclick="highlight('s_{{ song.id }}')" href="https://vocadb.net/S/{{ song.id }}" target="_blank">{{ song.id }}</a></td>
-                            <td>{{ song.name }}</td>
-                            <td>{{ song.artistString }}</td>
                             <td>
+                                {{ song.name }} <small class="text-muted">({{ song.meta }})</small><br><small>{{ song.artistString }}</small>
+
+                            </td>
+
+                            <td style="vertical-align: middle; text-align: center">
                                 {% if (song.on_albums) %}
                                 ✔️
                                 {% else %}
                                 ❌
                                 {% endif %}
                             </td>
-                            <td>
+                            <td style="vertical-align: middle; text-align: center">
                                 {% if (song.deleted) %}
                                 ❌
                                 {% elif (song.sound_only) %}
@@ -111,7 +147,7 @@
                                 </div>
                                 {% endif %}
                             </td>
-                            <td>
+                            <td style="vertical-align: middle; text-align: center">
                                 {% if (song.reprinted) %}
                                 <div data-toggle="tooltip" data-placement="left" title="{{ song.reprint_services }}">
                                     ✔️
@@ -170,6 +206,7 @@
 
     window.addEventListener('load', (event) => {
         document.getElementById("{{ lang|safe }}").className = 'dropdown-item active';
+        document.getElementById("{{ date_format|safe }}").className = 'dropdown-item active';
         if ({{ artistId }} != -1)
         {
             if (Cookies.get('artistId') !== '{{ artistId|safe }}') {
@@ -178,6 +215,8 @@
             }
         }
         Cookies.set('nameLanguage', '{{ lang|safe }}', { expires: 100000, sameSite: 'lax'});
+        Cookies.set('dateFormat', '{{ date_format|safe }}', { expires: 100000, sameSite: 'lax'});
+
     });
 
     function refresh(artistId) {

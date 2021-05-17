@@ -1,11 +1,22 @@
 import os
 
+import dateformat
 from flask import Flask, render_template, request
 from dataclasses import dataclass
 import requests
 import json
 
 app = Flask(__name__)
+date_format = dateformat.DateFormat("YYYY-MM-DDThh:mm:ssZ")
+date_schemes = {'auto': '%x',
+                'de_DE': '%Y-%m-%d',
+                'en_US': '%m-%d-%y',
+                'es_ES': '%d-%m-%y',
+                'pt_PT': '%m/%d/%Y',
+                'fi_FI': '%d.%m.%Y',
+                'ru_RU': '%d.%m.%Y',
+                'zh_Hans': '%Y/%m/%d',
+                'ja_JP': '%Y/%m/%d'}
 
 
 @dataclass
@@ -26,6 +37,7 @@ class DeleterSong:
     original_services: str
     reprint_services: str
     on_albums: bool
+    meta: str
 
 
 def load_deleters(lang):
@@ -54,6 +66,9 @@ def render_deleters():
     lang = request.cookies.get('nameLanguage')
     if lang is None:
         lang = 'Default'
+    date_scheme = request.cookies.get('dateFormat')
+    if date_scheme is None:
+        date_scheme = 'auto'
     deleters_clean = load_deleters(lang)
     if artistId is None:
         artistId = request.cookies.get('artistId')
@@ -88,9 +103,10 @@ def render_deleters():
                                                         if pv['pvType'] == 'Original' and not pv['disabled']])),
                                          ', '.join(set([pv['service'] for pv in song['pvs']
                                                         if pv['pvType'] != 'Original' and not pv['disabled']])),
-                                         song['albums'] != []))
+                                         song['albums'] != [],
+                                         f"{song['songType']}{', ' + date_format.parse(song['publishDate']).date().strftime(date_schemes[date_scheme]) if 'publishDate' in song.keys() else ''}"))
 
-    return render_template('index.html', deleters=deleters_clean, artistId=artistId, songs=songs, lang=lang)
+    return render_template('index.html', deleters=deleters_clean, artistId=artistId, songs=songs, lang=lang, date_format=date_scheme)
 
 
 if __name__ == '__main__':
