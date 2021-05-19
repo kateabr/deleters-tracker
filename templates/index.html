@@ -108,9 +108,9 @@
                         <thead>
                         <tr>
                             <th class="col-lg-1">Id</th>
-                            <th class="col-lg-8">Info</th>
                             <th class="col-lg-1">
                                 <a type="button" class="btn btn-primary active" style="display: block" id="on_albums" onclick="toggle('on_albums')">On album</a></th>
+                            <th class="col-lg-8">Info</th>
                             <th class="col-lg-1">
                                 <a type="button" class="btn btn-primary active" style="display: block" id="originals" onclick="toggle('originals')">Available</a></th>
                             <th class="col-lg-1">
@@ -122,17 +122,15 @@
                         {% for song in songs %}
                         <tr id="s_{{ song.id }}" class="">
                             <td><a onclick="highlight('s_{{ song.id }}')" href="https://vocadb.net/S/{{ song.id }}" target="_blank">{{ song.id }}</a></td>
-                            <td>
-                                {{ song.name }} <small class="text-muted">({{ song.meta }})</small><br><small>{{ song.artistString }}</small>
-
-                            </td>
-
                             <td style="vertical-align: middle; text-align: center">
                                 {% if (song.on_albums) %}
                                 ✔️
                                 {% else %}
                                 ❌
                                 {% endif %}
+                            </td>
+                            <td>
+                                {{ song.name }} <small class="text-muted">({{ song.meta }})</small><br><small>{{ song.artistString }}</small>
                             </td>
                             <td style="vertical-align: middle; text-align: center">
                                 {% if (song.deleted) %}
