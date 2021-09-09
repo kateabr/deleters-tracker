@@ -45,7 +45,7 @@ def load_deleters(lang):
     deleters_clean = []
     deleters = json.loads(
         requests.get(
-            f"https://vocadb.net/api/artists?tagId%5B%5D=7765&maxResults=1&getTotalCount=true&fields=256").text)
+            f"https://vocadb.net/api/artists?tagId%5B%5D=7765&maxResults=1&getTotalCount=true").text)
     total_count = deleters['totalCount']
     loop = [(i, 50) for i in list(range(0, total_count // 50))]
     if total_count % 50 != 0:
