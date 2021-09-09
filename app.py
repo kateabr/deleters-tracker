@@ -39,6 +39,7 @@ class DeleterSong:
     reprint_services: str
     on_albums: bool
     meta: str
+    marked_for_deletion: bool
 
 
 def load_deleters(lang):
@@ -89,7 +90,7 @@ def render_deleters():
         loop.append((len(loop), total_count % 50))
     for off_mult, count in loop:
         deleter_songs = json.loads(requests.get(
-            f"https://vocadb.net/api/songs?artistId%5B%5D={artistId}&start={50 * off_mult}&maxResults={count}&fields=PVs,Albums&artistParticipationStatus=OnlyMainAlbums&lang={lang}&sort=PublishDate").text)
+            f"https://vocadb.net/api/songs?artistId%5B%5D={artistId}&start={50 * off_mult}&maxResults={count}&fields=PVs,Albums,Tags&artistParticipationStatus=OnlyMainAlbums&lang={lang}&sort=PublishDate").text)
         for song in deleter_songs['items']:
             if song['pvs'] and any(pv['pvType'] != 'Other' for pv in song['pvs']) and not any(
                     deleter_song.id == song['id'] for deleter_song in songs) and song['songType'] != 'Instrumental':
@@ -106,7 +107,8 @@ def render_deleters():
                                          ', '.join(set([pv['service'] for pv in song['pvs']
                                                         if pv['pvType'] != 'Original' and not pv['disabled']])),
                                          song['albums'] != [],
-                                         f"{song['songType']}{', ' + date_format.parse(song['publishDate']).date().strftime(date_schemes[date_scheme]) if 'publishDate' in song.keys() else ''}"))
+                                         f"{song['songType']}{', ' + date_format.parse(song['publishDate']).date().strftime(date_schemes[date_scheme]) if 'publishDate' in song.keys() else ''}",
+                                         len([tag for tag in song['tags'] if tag['tag']['id'] == 4852]) == 1))
 
     return render_template('index.html', deleters=deleters_clean, artistId=artistId, songs=songs, lang=lang, date_format=date_scheme)
 

@@ -137,7 +137,14 @@
                                 {% endif %}
                             </td>
                             <td>
-                                {{ song.name }} <small class="text-muted">({{ song.meta }})</small><br><small>{{ song.artistString }}</small>
+                                {{ song.name }} <small class="text-muted">({{ song.meta }})</small>
+                                {% if song.marked_for_deletion %}
+                                <span class="badge badge-pill badge-danger" style="margin-left: 3px">marked for deletion</span>
+                                {% endif %}
+
+                                <br>
+                                <small>{{ song.artistString }}</small>
+
                             </td>
                             <td style="vertical-align: middle; text-align: center">
                                 {% if (song.deleted) %}
