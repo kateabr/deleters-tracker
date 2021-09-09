@@ -92,6 +92,13 @@
                                         {{ deleter.type[0] }}
                                     </span>
                                 </button>
+                                {% if not deleter.can_reprint %}
+                                <small>
+                                    <span class="badge badge-pill badge-danger mb-0 mt-1" style="margin-left: 3px">
+                                            do not reupload
+                                    </span>
+                                </small>
+                                {% endif %}
                             </td>
                             <td style="width: 10%" class="text-right">
                                 <a type="button" class="btn btn-primary btn-sm"
@@ -171,6 +178,7 @@
                                 <button class="btn btn-link"
                                         onclick="refresh({{ deleter.id|safe }})">
                                     <i class="fas fa-angle-right"></i> {{ deleter.name }}
+
                                     {% if deleter.type[0] == 'P' %}
                                     <span class="badge badge-pill badge-primary mb-0" style="margin-left: 3px">
                                     {% elif deleter.type[0] == 'C' %}
@@ -181,6 +189,13 @@
                                         {{ deleter.type[0] }}
                                     </span>
                                 </button>
+                                {% if not deleter.can_reprint %}
+                                <small>
+                                    <span class="badge badge-pill badge-danger mb-0 mt-1" style="margin-left: 3px">
+                                            do not reupload
+                                    </span>
+                                </small>
+                                {% endif %}
                             </td>
                             <td style="width: 10%" class="text-right"><a type="button" class="btn btn-primary btn-sm"
                                                       href="https://vocadb.net/Ar/{{ deleter.id }}" target="_blank">

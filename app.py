@@ -24,6 +24,7 @@ class Deleter:
     name: str
     id: str
     type: str
+    can_reprint: bool
 
 
 @dataclass
@@ -52,11 +53,12 @@ def load_deleters(lang):
 
     for off_mult, count in loop:
         deleters = json.loads(requests.get(
-            f"https://vocadb.net/api/artists?start={50 * off_mult}&tagId%5B%5D=7765&maxResults={count}&lang={lang}").text)
+            f"https://vocadb.net/api/artists?start={50 * off_mult}&tagId%5B%5D=7765&maxResults={count}&lang={lang}&fields=Tags").text)
         for deleter in deleters['items']:
             deleters_clean.append(Deleter(name=deleter['name'],
                                           id=deleter['id'],
-                                          type=deleter['artistType']))
+                                          type=deleter['artistType'],
+                                          can_reprint=len([tag for tag in deleter['tags'] if tag['tag']['id'] == 1695]) < 1))
     return deleters_clean
 
 
